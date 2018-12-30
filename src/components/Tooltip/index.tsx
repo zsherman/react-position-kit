@@ -2,6 +2,7 @@ import * as React from 'react'
 import Rect from 'components/Rect'
 // import { Position, Alignment } from 'types'
 import { uniq, fitOnBestSide } from './utils'
+import Arrow from '../Arrow'
 
 // type ChildFunction = React.StatelessComponent<IChildProps>;
 type ContentFunction = (props: IContentProps) => React.ReactNode;
@@ -36,6 +37,10 @@ interface IProps {
   offset: number;
   allowOverflow: boolean;
   hasArrow: boolean;
+  arrowSize: number;
+  backgroundColor: string;
+  borderColor: string;
+  borderWidth: number;
   onMouseEnter?: InteractionHandler;
   onMouseLeave?: InteractionHandler;
   onClick?: InteractionHandler;
@@ -69,11 +74,15 @@ class Tooltip extends React.Component<IProps, IState> {
     alignment: "middle",
     autoPosition: ["top", "right", "left", "bottom"],
     autoAlign: ["start", "middle", "end"],
+    trigger: ['click', 'hover'],
     unmountDelay: 100,
     allowOverflow: false,
+    backgroundColor: '#eee',
+    borderColor: '#000',
+    borderWidth: 1,
     hasArrow: true,
-    trigger: ['click', 'hover'],
-    offset: 10,
+    arrowSize: 8,
+    offset: 15,
   }
 
   readonly state: IState = initialState
@@ -96,7 +105,7 @@ class Tooltip extends React.Component<IProps, IState> {
   handleClickOutside = (e: MouseEvent) => {
     const node = this.rootRef.current
     if (node && !node.contains(e.target as Node)) {
-      this.toggleIsOpen(false);
+      // this.toggleIsOpen(false);
     }
   }
 
@@ -146,13 +155,15 @@ class Tooltip extends React.Component<IProps, IState> {
     this.toggleIsOpen(true)
   }
 
-  calculatePosition(anchorRect: DOMRect, contentRect?: DOMRect): React.CSSProperties {
+  calculatePosition(anchorRect: DOMRect, contentRect?: DOMRect): any {
     const {
       position,
       alignment,
       autoPosition,
       allowOverflow,
       offset,
+      hasArrow,
+      arrowSize,
     } = this.props
 
     // Position priority list
@@ -168,52 +179,81 @@ class Tooltip extends React.Component<IProps, IState> {
     }
 
     // Get the final styles for the content renderer
-    const styles = fitOnBestSide({
+    const fit = fitOnBestSide({
       positions: positions.filter(uniq),
       alignment,
       anchorRect,
       contentRect,
       allowOverflow,
       offset,
+      hasArrow,
+      arrowSize,
     })
 
-    return styles
+    return fit
   }
 
-  getContentProps = (
-    isOpen: boolean,
-    ref: Ref,
-    anchorRect: DOMRect,
-    contentRect?: DOMRect,
-  ): any => {
-    const handlers = this.getHandlers()
-    return () => ({
-      ref,
-      ...handlers,
-      style: this.calculatePosition(anchorRect, contentRect),
-    })
+  getContentStyles (): React.CSSProperties {
+    const {
+      backgroundColor,
+      borderWidth,
+      borderColor,
+    } = this.props
+    return {
+      backgroundColor,
+      borderWidth,
+      borderColor,
+      borderStyle: 'solid',
+      padding: 15,
+    }
   }
 
   renderContent(anchorRect: DOMRect): React.ReactNode {
     const { isOpen } = this.state
-    const { content } = this.props
+    const {
+      content,
+      hasArrow,
+      arrowSize,
+      backgroundColor,
+      borderWidth,
+      borderColor,
+      offset,
+    } = this.props
 
     if (!isOpen || !anchorRect) return null
 
     const handlers = this.getHandlers()
 
-    if (isOpen && anchorRect && typeof content !== 'function') {
+    if (isOpen && typeof content !== 'function') {
       return (
         <Rect observe={isOpen}>
-          {({ rect: contentRect, ref }) => (
-            <div
-              {...handlers}
-              ref={ref}
-              style={this.calculatePosition(anchorRect, contentRect)}
-            >
-              {content}
-            </div>
-          )}
+          {({ rect: contentRect, ref }) => {
+            const fit = this.calculatePosition(anchorRect, contentRect)
+            return (
+              <div
+                {...handlers}
+                ref={ref}
+                style={{
+                  ...fit.styles,
+                  ...this.getContentStyles(),
+                }}
+              >
+                {content}
+                {hasArrow && (
+                  <Arrow
+                    anchorRect={anchorRect}
+                    contentRect={contentRect}
+                    position={fit.position}
+                    size={arrowSize}
+                    color={backgroundColor}
+                    borderWidth={borderWidth}
+                    borderColor={borderColor}
+                    offset={offset}
+                  />
+                )}
+              </div>
+            )
+          }}
         </Rect>
       )
     }
@@ -221,17 +261,38 @@ class Tooltip extends React.Component<IProps, IState> {
     if (isContentFunction(content)) {
       return (
         <Rect observe={isOpen}>
-          {({ rect: contentRect, ref }) => (
-            content({
-              isOpen,
-              getProps: this.getContentProps(
-                isOpen,
-                ref,
-                anchorRect,
-                contentRect
-              ),
-            })
-          )}
+          {({ rect: contentRect, ref }) => {
+            const fit = this.calculatePosition(anchorRect, contentRect)
+            return (
+              <React.Fragment>
+                {content({
+                  isOpen,
+                  getProps: () => {
+                    return {
+                      ref,
+                      ...handlers,
+                      style: {
+                        ...fit.style,
+                        ...this.getContentStyles(),
+                      },
+                    }
+                  }
+                })}
+                {hasArrow && (
+                  <Arrow
+                    anchorRect={anchorRect}
+                    contentRect={contentRect}
+                    position={fit.position}
+                    size={arrowSize}
+                    color={backgroundColor}
+                    borderWidth={borderWidth}
+                    borderColor={borderColor}
+                    offset={offset}
+                  />
+                )}
+              </React.Fragment>
+            )
+          }}
         </Rect>
       )
     }

@@ -1,6 +1,12 @@
 import * as React from 'react'
+
 type InteractionEvent = MouseEvent | TouchEvent;
 type InteractionHandler = (e: InteractionEvent) => void;
+
+interface IFit {
+  style: React.CSSProperties;
+  position: Position;
+}
 
 // Placement configuration used to calculate coordinates for positioning and alignment
 const placementsByPosition = {
@@ -36,21 +42,21 @@ const placementsByPosition = {
 
 // Base styles to apply to all content containers
 const baseStyles: React.CSSProperties = {
-  padding: 15,
   visibility: 'visible',
-  background: '#FFF',
-  boxShadow: '1px 1px 1px #000',
   position: 'fixed',
+  boxShadow: 'rgba(0, 0, 0, 0.05) 1px 1px 1px',
 }
 
 // Measure the position and alignment for each placement of a given content rect
-export function measureFit({
+export function measureFitStyles({
   position,
   alignment,
   anchorRect,
   contentRect,
   offset,
-}: any): any {
+  hasArrow,
+  arrowSize,
+}: any): React.CSSProperties {
   // If the content rect hasn't been measured yet don't add positioning styles
   if (!contentRect) return baseStyles
 
@@ -86,6 +92,8 @@ export function measureFit({
   // TODO use alignment enum
   if (alignment === 'start') {
     contentAlignment = anchorAlignment;
+    // Account for arrow placement
+    contentAlignment = hasArrow ? contentAlignment - arrowSize : contentAlignment
   }
 
   if (alignment === 'middle') {
@@ -95,6 +103,8 @@ export function measureFit({
 
   if (alignment === 'end') {
     contentAlignment = (anchorAlignment + anchorRect[placement.alignmentDimension]) - contentRect[placement.alignmentDimension]
+    // Account for arrow placement
+    contentAlignment = hasArrow ? contentAlignment + arrowSize : contentAlignment
   }
 
   const coords = {
@@ -115,22 +125,32 @@ export function fitOnBestSide({
   anchorRect,
   contentRect,
   offset,
-}: any): React.CSSProperties {
+  hasArrow,
+  arrowSize,
+}: any): IFit {
   const fits = positions.map(
-    (position: any) => measureFit({
+    (position: any) => ({
       position,
-      alignment,
-      anchorRect,
-      contentRect,
-      offset,
+      style: measureFitStyles({
+        position,
+        alignment,
+        anchorRect,
+        contentRect,
+        offset,
+        hasArrow,
+        arrowSize,
+      })
     })
   )
 
   const rankings = rankFits(fits)
 
   return {
-    ...baseStyles,
-    ...rankings[0],
+    position: rankings[0].position,
+    style: {
+      ...baseStyles,
+      ...rankings[0].style,
+    }
   }
 }
 

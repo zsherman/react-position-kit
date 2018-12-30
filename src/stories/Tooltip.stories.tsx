@@ -25,7 +25,7 @@ storiesOf('Tooltip', module)
       </Tooltip>
     </div>
   ))
-  .add('Triggers', () => (
+  .add('Click Trigger', () => (
     <div style={styles}>
       <Tooltip content="Hello" trigger="click">
         <div>Click Me!</div>
@@ -55,7 +55,7 @@ storiesOf('Tooltip', module)
       </Tooltip>
     </div>
   ))
-  .add('Positions & Alignments', withState({ position: 'top', alignment: 'start' })(({ store }) => (
+  .add('Positions & Alignments', withState({ position: 'left', alignment: 'start' })(({ store }) => (
     <div>
       <div style={{ display: 'flex' }}>
         <span>Position:</span>
@@ -98,6 +98,7 @@ storiesOf('Tooltip', module)
               </div>
             )
           }
+          trigger="click"
           position={store.state.position as Position}
           alignment={store.state.alignment as Alignment}
         >
