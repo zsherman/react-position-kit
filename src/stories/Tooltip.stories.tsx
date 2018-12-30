@@ -102,7 +102,7 @@ storiesOf('Tooltip', module)
           position={store.state.position as Position}
           alignment={store.state.alignment as Alignment}
         >
-          Hover Me!
+          Click Me!
         </Tooltip>
       </div>
     </div>

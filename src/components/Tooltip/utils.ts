@@ -41,10 +41,11 @@ const placementsByPosition = {
 }
 
 // Base styles to apply to all content containers
-const baseStyles: React.CSSProperties = {
-  visibility: 'visible',
-  position: 'fixed',
-  boxShadow: 'rgba(0, 0, 0, 0.05) 1px 1px 1px',
+function getBaseStyles(): React.CSSProperties {
+  return {
+    visibility: 'visible',
+    position: 'fixed',
+  }
 }
 
 // Measure the position and alignment for each placement of a given content rect
@@ -58,7 +59,7 @@ export function measureFitStyles({
   arrowSize,
 }: any): React.CSSProperties {
   // If the content rect hasn't been measured yet don't add positioning styles
-  if (!contentRect) return baseStyles
+  if (!contentRect) return getBaseStyles()
 
   // Get placement configuration
   const placement = placementsByPosition[position]
@@ -144,6 +145,7 @@ export function fitOnBestSide({
   )
 
   const rankings = rankFits(fits)
+  const baseStyles = getBaseStyles()
 
   return {
     position: rankings[0].position,

@@ -44,6 +44,8 @@ interface IProps {
   onMouseEnter?: InteractionHandler;
   onMouseLeave?: InteractionHandler;
   onClick?: InteractionHandler;
+  styles: React.CSSProperties;
+  animated: boolean;
 }
 
 interface IContentProps {
@@ -83,6 +85,8 @@ class Tooltip extends React.Component<IProps, IState> {
     hasArrow: true,
     arrowSize: 8,
     offset: 15,
+    animated: true,
+    styles: {},
   }
 
   readonly state: IState = initialState
@@ -198,14 +202,22 @@ class Tooltip extends React.Component<IProps, IState> {
       backgroundColor,
       borderWidth,
       borderColor,
+      animated,
     } = this.props
-    return {
+    const styles = {
       backgroundColor,
       borderWidth,
       borderColor,
       borderStyle: 'solid',
       padding: 15,
+      boxShadow: 'rgba(0, 0, 0, 0.05) 1px 1px 1px',
     }
+
+    if (animated) {
+      styles['transition'] = 'top .2s, left .2s'
+    }
+
+    return styles
   }
 
   renderContent(anchorRect: DOMRect): React.ReactNode {
@@ -234,7 +246,7 @@ class Tooltip extends React.Component<IProps, IState> {
                 {...handlers}
                 ref={ref}
                 style={{
-                  ...fit.styles,
+                  ...fit.style,
                   ...this.getContentStyles(),
                 }}
               >
