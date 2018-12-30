@@ -6,9 +6,10 @@
 // }
 
 export type Position = "top" | "bottom" | "left" | "right";
+export type Alignment = "start" | "middle" | "end";
 
-export enum Alignment {
-  Start = 'start',
-  Middle = 'middle',
-  End = 'end',
-}
+// export enum Alignment {
+//   Start = "start",
+//   Middle = "middle",
+//   End = "end"
+// }

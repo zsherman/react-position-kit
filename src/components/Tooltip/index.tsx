@@ -1,8 +1,8 @@
-import * as React from 'react'
-import Rect from 'components/Rect'
+import * as React from "react";
+import Rect from "components/rect";
 // import { Position, Alignment } from 'types'
-import { uniq, fitOnBestSide } from './utils'
-import Arrow from '../Arrow'
+import { uniq, fitOnBestSide } from "./utils";
+import Arrow from "../arrow";
 
 // type ChildFunction = React.StatelessComponent<IChildProps>;
 type ContentFunction = (props: IContentProps) => React.ReactNode;
@@ -17,11 +17,11 @@ type InteractionEvent = React.MouseEvent | React.TouchEvent;
 type InteractionHandler = (e: InteractionEvent) => void;
 
 function isChildFunction(arg: any): arg is ChildFunction {
-  return typeof arg === 'function';
+  return typeof arg === "function";
 }
 
 function isContentFunction(arg: any): arg is ContentFunction {
-  return typeof arg === 'function';
+  return typeof arg === "function";
 }
 
 interface IProps {
@@ -66,9 +66,15 @@ interface IState {
   isOpen: boolean;
 }
 
-const initialState: IState = {
-  isOpen: false,
+interface IHandlers {
+  onMouseEnter: (e: React.MouseEvent) => void;
+  onMouseLeave: (e: React.MouseEvent) => void;
+  onClick: (e: React.MouseEvent<HTMLElement>) => void;
 }
+
+const initialState: IState = {
+  isOpen: false
+};
 
 class Tooltip extends React.Component<IProps, IState> {
   static defaultProps = {
@@ -76,26 +82,26 @@ class Tooltip extends React.Component<IProps, IState> {
     alignment: "middle",
     autoPosition: ["top", "right", "left", "bottom"],
     autoAlign: ["start", "middle", "end"],
-    trigger: ['click', 'hover'],
+    trigger: ["click", "hover"],
     unmountDelay: 100,
     allowOverflow: false,
-    backgroundColor: '#eee',
-    borderColor: '#000',
+    backgroundColor: "#eee",
+    borderColor: "#000",
     borderWidth: 1,
     hasArrow: true,
     arrowSize: 8,
     offset: 15,
     animated: true,
-    styles: {},
-  }
+    styles: {}
+  };
 
-  readonly state: IState = initialState
+  readonly state: IState = initialState;
 
   private unmountTimerId?: number;
   private rootRef = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
-    document.addEventListener('click', this.handleClickOutside);
+    document.addEventListener("click", this.handleClickOutside);
   }
 
   componentWillUnmount() {
@@ -103,18 +109,18 @@ class Tooltip extends React.Component<IProps, IState> {
       clearTimeout(this.unmountTimerId);
     }
 
-    document.removeEventListener('click', this.handleClickOutside);
+    document.removeEventListener("click", this.handleClickOutside);
   }
 
   handleClickOutside = (e: MouseEvent) => {
-    const node = this.rootRef.current
+    const node = this.rootRef.current;
     if (node && !node.contains(e.target as Node)) {
       // this.toggleIsOpen(false);
     }
-  }
+  };
 
   toggleIsOpen = (isOpen?: boolean): void => {
-    const { unmountDelay } = this.props
+    const { unmountDelay } = this.props;
 
     if (this.unmountTimerId) {
       clearTimeout(this.unmountTimerId);
@@ -122,9 +128,7 @@ class Tooltip extends React.Component<IProps, IState> {
     }
 
     this.setState((state: IState) => {
-      const nextIsOpen = typeof isOpen === 'undefined'
-        ? !state.isOpen
-        : isOpen
+      const nextIsOpen = typeof isOpen === "undefined" ? !state.isOpen : isOpen;
 
       if (!nextIsOpen) {
         this.unmountTimerId = window.setTimeout(() => {
@@ -136,28 +140,28 @@ class Tooltip extends React.Component<IProps, IState> {
       }
 
       return {
-        isOpen: nextIsOpen,
+        isOpen: nextIsOpen
       };
-    })
-  }
+    });
+  };
 
   onMouseEnter = (e: React.MouseEvent): void => {
-    const { onMouseEnter } = this.props
-    if (onMouseEnter) onMouseEnter(e)
+    const { onMouseEnter } = this.props;
+    if (onMouseEnter) onMouseEnter(e);
     this.toggleIsOpen(true);
-  }
+  };
 
   onMouseLeave = (e: React.MouseEvent): void => {
-    const { onMouseLeave } = this.props
-    if (onMouseLeave) onMouseLeave(e)
-    this.toggleIsOpen(false)
-  }
+    const { onMouseLeave } = this.props;
+    if (onMouseLeave) onMouseLeave(e);
+    this.toggleIsOpen(false);
+  };
 
   onClick = (e: React.MouseEvent<HTMLElement>): void => {
-    const { onClick } = this.props
-    if (onClick) onClick(e)
-    this.toggleIsOpen(true)
-  }
+    const { onClick } = this.props;
+    if (onClick) onClick(e);
+    this.toggleIsOpen(true);
+  };
 
   calculatePosition(anchorRect: DOMRect, contentRect?: DOMRect): any {
     const {
@@ -167,19 +171,19 @@ class Tooltip extends React.Component<IProps, IState> {
       allowOverflow,
       offset,
       hasArrow,
-      arrowSize,
-    } = this.props
+      arrowSize
+    } = this.props;
 
     // Position priority list
-    let positions: Array<Position>
+    let positions: Array<Position>;
 
     // Get the final position preferences
     // TypeScript won't let us concat string | array so we
     // have to separate out these blocks
-    if (typeof position === 'string') {
-      positions = [position, ...autoPosition]
+    if (typeof position === "string") {
+      positions = [position, ...autoPosition];
     } else {
-      positions = [...position, ...autoPosition]
+      positions = [...position, ...autoPosition];
     }
 
     // Get the final styles for the content renderer
@@ -191,37 +195,32 @@ class Tooltip extends React.Component<IProps, IState> {
       allowOverflow,
       offset,
       hasArrow,
-      arrowSize,
-    })
+      arrowSize
+    });
 
-    return fit
+    return fit;
   }
 
-  getContentStyles (): React.CSSProperties {
-    const {
+  getContentStyles(): React.CSSProperties {
+    const { backgroundColor, borderWidth, borderColor, animated } = this.props;
+    const styles: React.CSSProperties = {
       backgroundColor,
       borderWidth,
       borderColor,
-      animated,
-    } = this.props
-    const styles = {
-      backgroundColor,
-      borderWidth,
-      borderColor,
-      borderStyle: 'solid',
+      borderStyle: "solid",
       padding: 15,
-      boxShadow: 'rgba(0, 0, 0, 0.05) 1px 1px 1px',
-    }
+      boxShadow: "rgba(0, 0, 0, 0.05) 1px 1px 1px"
+    };
 
     if (animated) {
-      styles['transition'] = 'top .2s, left .2s'
+      styles["transition"] = "top .2s, left .2s";
     }
 
-    return styles
+    return styles;
   }
 
   renderContent(anchorRect: DOMRect): React.ReactNode {
-    const { isOpen } = this.state
+    const { isOpen } = this.state;
     const {
       content,
       hasArrow,
@@ -229,25 +228,25 @@ class Tooltip extends React.Component<IProps, IState> {
       backgroundColor,
       borderWidth,
       borderColor,
-      offset,
-    } = this.props
+      offset
+    } = this.props;
 
-    if (!isOpen || !anchorRect) return null
+    if (!isOpen || !anchorRect) return null;
 
-    const handlers = this.getHandlers()
+    const handlers = this.getHandlers();
 
-    if (isOpen && typeof content !== 'function') {
+    if (isOpen && typeof content !== "function") {
       return (
         <Rect observe={isOpen}>
           {({ rect: contentRect, ref }) => {
-            const fit = this.calculatePosition(anchorRect, contentRect)
+            const fit = this.calculatePosition(anchorRect, contentRect);
             return (
               <div
                 {...handlers}
                 ref={ref}
                 style={{
                   ...fit.style,
-                  ...this.getContentStyles(),
+                  ...this.getContentStyles()
                 }}
               >
                 {content}
@@ -264,17 +263,17 @@ class Tooltip extends React.Component<IProps, IState> {
                   />
                 )}
               </div>
-            )
+            );
           }}
         </Rect>
-      )
+      );
     }
 
     if (isContentFunction(content)) {
       return (
         <Rect observe={isOpen}>
           {({ rect: contentRect, ref }) => {
-            const fit = this.calculatePosition(anchorRect, contentRect)
+            const fit = this.calculatePosition(anchorRect, contentRect);
             return (
               <React.Fragment>
                 {content({
@@ -285,9 +284,9 @@ class Tooltip extends React.Component<IProps, IState> {
                       ...handlers,
                       style: {
                         ...fit.style,
-                        ...this.getContentStyles(),
-                      },
-                    }
+                        ...this.getContentStyles()
+                      }
+                    };
                   }
                 })}
                 {hasArrow && (
@@ -303,56 +302,53 @@ class Tooltip extends React.Component<IProps, IState> {
                   />
                 )}
               </React.Fragment>
-            )
+            );
           }}
         </Rect>
-      )
+      );
     }
 
-    return null
+    return null;
   }
 
   getHandlers() {
-    const { trigger } = this.props
-    let handlers = {}
+    const { trigger } = this.props;
+    let handlers: Partial<IHandlers> = {};
 
-    if (trigger.includes('hover')) {
-      handlers["onMouseEnter"] = this.onMouseEnter
-      handlers["onMouseLeave"] = this.onMouseLeave
+    if (trigger.includes("hover")) {
+      handlers.onMouseEnter = this.onMouseEnter;
+      handlers.onMouseLeave = this.onMouseLeave;
     }
 
-    if (trigger.includes('click')) {
-      handlers["onClick"] = this.onClick
+    if (trigger.includes("click")) {
+      handlers.onClick = this.onClick;
     }
 
-    return handlers
+    return handlers;
   }
 
   renderChildren(ref: Ref, rect: DOMRect): React.ReactNode {
-    const { children } = this.props
+    const { children } = this.props;
 
-    const handlers = this.getHandlers()
+    const handlers = this.getHandlers();
 
     if (isChildFunction(children)) {
       return children({
         ref,
         toggleIsOpen: this.toggleIsOpen,
-        ...handlers,
-      })
+        ...(handlers as any)
+      });
     }
 
     return (
-      <div
-        ref={ref}
-        {...handlers}
-      >
+      <div ref={ref} {...handlers}>
         {children}
       </div>
-    )
+    );
   }
 
   render() {
-    const { isOpen } = this.state
+    const { isOpen } = this.state;
 
     return (
       <Rect observe={isOpen}>
@@ -363,8 +359,8 @@ class Tooltip extends React.Component<IProps, IState> {
           </div>
         )}
       </Rect>
-    )
+    );
   }
 }
 
-export default Tooltip
+export default Tooltip;

@@ -1,13 +1,12 @@
-import React from 'react'
-import { withOptions } from '@storybook/addon-options'
-import { withInfo } from '@storybook/addon-info'
-import centered from '@storybook/addon-centered'
-import { configure, addDecorator } from '@storybook/react'
-import { injectGlobal } from 'emotion'
+import React from "react";
+import { withOptions } from "@storybook/addon-options";
+import { withInfo } from "@storybook/addon-info";
+import centered from "@storybook/addon-centered";
+import { configure, addDecorator } from "@storybook/react";
+import { injectGlobal } from "emotion";
 
 // Automatically import all files ending in *.stories.tsx
-const req = require.context('../src', true, /\.stories\.tsx$/)
-
+const req = require.context("../src", true, /\.stories\.tsx$/);
 
 // Simple style reset
 // injectGlobal`
@@ -44,4 +43,4 @@ const req = require.context('../src', true, /\.stories\.tsx$/)
 //   })
 // )
 
-configure(() => req.keys().forEach(f => req(f)), module)
+configure(() => req.keys().forEach(f => req(f)), module);
