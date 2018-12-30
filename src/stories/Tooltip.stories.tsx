@@ -1,7 +1,7 @@
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import { withState } from "@dump247/storybook-state";
-import Tooltip from "components/Tooltip";
+import Tooltip from "components/tooltip";
 import { Position, Alignment } from "types";
 
 const positions: Position[] = ["top", "bottom", "left", "right"];

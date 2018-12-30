@@ -1,8 +1,8 @@
 import * as React from "react";
-import Rect from "components/Rect";
+import Rect from "components/rect";
 // import { Position, Alignment } from 'types'
 import { uniq, fitOnBestSide } from "./utils";
-import Arrow from "../Arrow";
+import Arrow from "../arrow";
 
 // type ChildFunction = React.StatelessComponent<IChildProps>;
 type ContentFunction = (props: IContentProps) => React.ReactNode;
