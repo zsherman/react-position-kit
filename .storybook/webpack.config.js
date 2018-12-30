@@ -12,7 +12,7 @@ module.exports = (baseConfig, env, defaultConfig) => {
   // Load markdown files
   defaultConfig.module.rules.push({
     test: /\.(md|mkd)$/,
-    use: 'raw-loader'
+    use: "raw-loader"
   });
 
   // Use TSDoc plugin
@@ -24,7 +24,7 @@ module.exports = (baseConfig, env, defaultConfig) => {
   // Support absolute importa from './src'
   defaultConfig.resolve.modules = [
     ...(defaultConfig.resolve.modules || []),
-    path.resolve('./src'),
+    path.resolve("./src")
   ];
 
   // Return the updated config

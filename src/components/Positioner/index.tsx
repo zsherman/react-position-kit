@@ -1,5 +1,5 @@
-import * as React from 'react'
-import Rect from '@reach/rect'
+import * as React from "react";
+import Rect from "@reach/rect";
 // import { Position } from 'types'
 
 export type Position = "top" | "bottom" | "left" | "right";
@@ -26,44 +26,40 @@ interface API {
 
 const initialState = {
   position: "top" as Position
-}
+};
 
 const styles: React.CSSProperties = {
-  position: 'fixed'
-}
+  position: "fixed"
+};
 
 class Positioner extends React.Component<IProps, IState> {
   Target: React.ReactNode;
-  node: HTMLDivElement;
+  node?: HTMLDivElement;
 
-  readonly state: IState = initialState
+  readonly state: IState = initialState;
 
   static defaultProps: IDefaultProps = {
     position: "top"
-  }
+  };
 
   private getApi({ rect, ref }: API): API {
     return {
       ref,
-      rect,
-    }
+      rect
+    };
   }
 
   render() {
-    const { children, observe } = this.props
+    const { children, observe } = this.props;
 
     return (
       <Rect observe={observe}>
         {({ rect, ref }: API) => (
-          <div style={styles}>
-            {children(
-              this.getApi({ rect, ref })
-            )}
-          </div>
+          <div style={styles}>{children(this.getApi({ rect, ref }))}</div>
         )}
       </Rect>
-    )
+    );
   }
 }
 
-export default Positioner
+export default Positioner;

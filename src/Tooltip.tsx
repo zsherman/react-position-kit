@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from "react";
 // import Positioner from 'components/Positioner'
 
 enum WindowRegion {
@@ -9,11 +9,15 @@ enum WindowRegion {
 }
 
 function windowRegion(mouseX: number, mouseY: number) {
-  const halfHeight = window.window.innerHeight * .5;
-  if (mouseX <= window.window.innerWidth * .5) {
-    return mouseY <= halfHeight ? WindowRegion.TopLeft : WindowRegion.BottomLeft;
+  const halfHeight = window.window.innerHeight * 0.5;
+  if (mouseX <= window.window.innerWidth * 0.5) {
+    return mouseY <= halfHeight
+      ? WindowRegion.TopLeft
+      : WindowRegion.BottomLeft;
   }
-  return mouseY <= halfHeight ? WindowRegion.TopRight : WindowRegion.BottomRight;
+  return mouseY <= halfHeight
+    ? WindowRegion.TopRight
+    : WindowRegion.BottomRight;
 }
 
 export interface TooltipProps {
@@ -45,11 +49,11 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       y: 0,
       wndRegion: WindowRegion.TopLeft,
       hidden: true,
-      ttClassName: this.props.tooltipClassName || 'Tooltip',
+      ttClassName: this.props.tooltipClassName || "Tooltip",
       offsetLeft: this.props.offsetLeft || 10,
       offsetTop: this.props.offsetTop || 10,
       offsetRight: this.props.offsetRight || 5,
-      offsetBottom: this.props.offsetBottom || 5,
+      offsetBottom: this.props.offsetBottom || 5
     };
   }
 
@@ -59,59 +63,70 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       x: e.clientX,
       y: e.clientY
     } as any);
-  }
+  };
 
   onMouseEnter = (e: React.MouseEvent) => {
     this.setState({
       hidden: false,
-      wndRegion: windowRegion(e.clientX, e.clientY),
+      wndRegion: windowRegion(e.clientX, e.clientY)
     } as any);
-  }
+  };
 
   onMouseleave = () => {
     this.setState({ hidden: true } as any);
-  }
+  };
 
   computeStyle = (): React.CSSProperties => {
     switch (this.state.wndRegion) {
       case WindowRegion.TopLeft:
         return {
-          position: 'fixed',
+          position: "fixed",
           left: `${this.state.x + this.state.offsetLeft}px`,
           top: `${this.state.y + this.state.offsetTop}px`
         };
       case WindowRegion.TopRight:
         return {
-          position: 'fixed',
-          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
+          position: "fixed",
+          right: `${window.window.innerWidth -
+            this.state.x +
+            this.state.offsetRight}px`,
           top: `${this.state.y + this.state.offsetTop}px`
         };
       case WindowRegion.BottomLeft:
         return {
-          position: 'fixed',
+          position: "fixed",
           left: `${this.state.x + this.state.offsetLeft}px`,
-          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`
+          bottom: `${window.window.innerHeight -
+            this.state.y +
+            this.state.offsetBottom}px`
         };
       case WindowRegion.BottomRight:
         return {
-          position: 'fixed',
-          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
-          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`
+          position: "fixed",
+          right: `${window.window.innerWidth -
+            this.state.x +
+            this.state.offsetRight}px`,
+          bottom: `${window.window.innerHeight -
+            this.state.y +
+            this.state.offsetBottom}px`
         };
     }
-  }
+  };
 
   render() {
     return (
-      <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseleave} onMouseMove={this.onMouseMove}>
+      <div
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseleave}
+        onMouseMove={this.onMouseMove}
+      >
         {this.props.children}
-        {
-          this.state.hidden ? null :
-            <div style={this.computeStyle()}>{this.props.content}</div>
-        }
+        {this.state.hidden ? null : (
+          <div style={this.computeStyle()}>{this.props.content}</div>
+        )}
       </div>
-    )
+    );
   }
 }
 
-export default Tooltip
+export default Tooltip;

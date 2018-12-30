@@ -22,15 +22,15 @@ interface IProps extends Partial<IDefaultProps> {
 
 class DecoratedRect extends React.Component<IProps, {}> {
   static defaultProps: IDefaultProps = {
-    observe: false,
-  }
+    observe: false
+  };
 
-  private el: HTMLDivElement
+  private el?: HTMLDivElement;
 
   calculateRectDims = (rect: DOMRect): DOMRect => {
     if (!this.el || !rect) return rect;
 
-    const styles: CSSStyleDeclaration = window.getComputedStyle(this.el)
+    const styles: CSSStyleDeclaration = window.getComputedStyle(this.el);
 
     // Account for margins in element dimensions
     return {
@@ -41,38 +41,41 @@ class DecoratedRect extends React.Component<IProps, {}> {
       bottom: rect.bottom,
       left: rect.left,
       right: rect.right,
-      width: rect.width + parseInt(styles.marginLeft || '0') + parseInt(styles.marginRight || '0'),
-      height: rect.height + parseInt(styles.marginTop || '0') + parseInt(styles.marginBottom || '0'),
-    }
+      width:
+        rect.width +
+        parseInt(styles.marginLeft || "0") +
+        parseInt(styles.marginRight || "0"),
+      height:
+        rect.height +
+        parseInt(styles.marginTop || "0") +
+        parseInt(styles.marginBottom || "0")
+    };
   };
 
   public onChange = (rect: DOMRect) => {
     if (this.props.onChange) {
       this.props.onChange(this.calculateRectDims(rect));
     }
-  }
+  };
 
   public setRef = (el: HTMLDivElement, ref: setRef): void => {
     this.el = el;
     ref(this.el);
-  }
+  };
 
   render() {
     const { observe, children } = this.props;
     return (
-      <Rect
-        observe={observe}
-        onChange={this.onChange}
-      >
-        {({ ref, rect }: IChildren) => (
+      <Rect observe={observe} onChange={this.onChange}>
+        {({ ref, rect }: IChildren) =>
           children({
             rect: this.calculateRectDims(rect),
-            ref: el => this.setRef(el, ref),
+            ref: el => this.setRef(el, ref)
           })
-        )}
+        }
       </Rect>
     );
   }
 }
 
-export default DecoratedRect
+export default DecoratedRect;
