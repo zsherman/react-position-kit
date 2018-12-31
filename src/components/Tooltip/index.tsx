@@ -89,8 +89,8 @@ class Tooltip extends React.Component<IProps, IState> {
     trigger: "hover",
     unmountDelay: 100,
     allowOverflow: false,
-    backgroundColor: "#eee",
-    borderColor: "#000",
+    backgroundColor: "#fff",
+    borderColor: "#ddd",
     borderWidth: 1,
     hasArrow: true,
     arrowSize: 8,
@@ -398,9 +398,14 @@ class Tooltip extends React.Component<IProps, IState> {
   }
 
   getChildStyles(): React.CSSProperties {
-    return {
-      cursor: "pointer"
-    };
+    const { trigger } = this.props;
+    const styles: React.CSSProperties = {};
+
+    if (trigger.includes('click')) {
+      styles["cursor"] = "pointer"
+    }
+
+    return styles
   }
 
   renderChildren(ref: Ref, rect: DOMRect): React.ReactNode {
