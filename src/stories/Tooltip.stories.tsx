@@ -50,6 +50,25 @@ storiesOf("Tooltip", module)
     </div>
   ))
   .add(
+    "Controllable",
+    withState({
+      isOpen: false,
+    })(({ store }) => (
+    <div>
+      <button onClick={() => store.set({ isOpen: !store.state.isOpen })}>
+        Toggle Open
+      </button>
+      <div style={styles}>
+        <Tooltip
+          isOpen={store.state.isOpen}
+          content="Hello"
+        >
+          I am Controllable, click the button above.
+        </Tooltip>
+      </div>
+    </div>
+  )))
+  .add(
     "Positions & Alignments",
     withState({
       position: "left" as Position,
