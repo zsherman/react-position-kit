@@ -25,10 +25,21 @@ storiesOf("Tooltip", module)
       </Tooltip>
     </div>
   ))
-  .add("Click Trigger", () => (
+  .add("Click trigger", () => (
     <div style={styles}>
       <Tooltip content="Hello" trigger="click">
         <div>Click Me!</div>
+      </Tooltip>
+    </div>
+  ))
+  .add("Custom styles", () => (
+    <div style={styles}>
+      <Tooltip
+        content="Hello"
+        style={{ color: "#FFF", textDecoration: 'underline' }}
+        backgroundColor="#000"
+      >
+        <div>Hover Me!</div>
       </Tooltip>
     </div>
   ))
@@ -52,23 +63,24 @@ storiesOf("Tooltip", module)
   .add(
     "Controllable",
     withState({
-      isOpen: false,
+      isOpen: false
     })(({ store }) => (
-    <div>
-      <button onClick={() => store.set({ isOpen: !store.state.isOpen })}>
-        Set to {store.state.isOpen ? 'Closed' : 'Open'}
-      </button>
-      <div style={styles}>
-        <Tooltip
-          isOpen={store.state.isOpen}
-          content="Hello"
-          closeOnClickOutside={false}
-        >
-          I am Controllable, click the button above.
-        </Tooltip>
+      <div>
+        <button onClick={() => store.set({ isOpen: !store.state.isOpen })}>
+          Set to {store.state.isOpen ? "Closed" : "Open"}
+        </button>
+        <div style={styles}>
+          <Tooltip
+            isOpen={store.state.isOpen}
+            content="Hello"
+            closeOnClickOutside={false}
+          >
+            I am Controllable, click the button above.
+          </Tooltip>
+        </div>
       </div>
-    </div>
-  )))
+    ))
+  )
   .add(
     "Positions & Alignments",
     withState({

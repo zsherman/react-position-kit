@@ -45,7 +45,7 @@ interface IProps {
   onMouseEnter?: InteractionHandler;
   onMouseLeave?: InteractionHandler;
   onClick?: InteractionHandler;
-  styles: React.CSSProperties;
+  style: React.CSSProperties;
   useOverlay: boolean;
   closeOnEscape: boolean;
   closeOnClickOutside: boolean;
@@ -96,11 +96,11 @@ class Tooltip extends React.Component<IProps, IState> {
     hasArrow: true,
     arrowSize: 8,
     offset: 15,
-    animated: true,
+    animated: false,
     closeOnEscape: true,
     closeOnClickOutside: true,
-    useOverlay: true,
-    styles: {}
+    useOverlay: false,
+    style: {}
   };
 
   readonly state: IState = initialState;
@@ -250,7 +250,7 @@ class Tooltip extends React.Component<IProps, IState> {
   }
 
   getContentStyles(): React.CSSProperties {
-    const { backgroundColor, borderWidth, borderColor, animated } = this.props;
+    const { backgroundColor, borderWidth, borderColor, animated, style } = this.props;
     const styles: React.CSSProperties = {
       backgroundColor,
       borderWidth,
@@ -258,6 +258,7 @@ class Tooltip extends React.Component<IProps, IState> {
       borderStyle: "solid",
       padding: 15,
       zIndex: 9999,
+      ...style,
     };
 
     if (animated) {
@@ -276,7 +277,7 @@ class Tooltip extends React.Component<IProps, IState> {
       backgroundColor,
       borderWidth,
       borderColor,
-      offset
+      offset,
     } = this.props;
 
     if (!isOpen || !anchorRect) return null;
