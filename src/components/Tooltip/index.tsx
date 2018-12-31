@@ -104,8 +104,8 @@ class Tooltip extends React.Component<IProps, IState> {
 
   readonly state: IState = initialState;
   private unmountTimerId?: number;
-  private rootRef = React.createRef<HTMLDivElement>();
-  private childRef?: Element;
+  private childEl?: Element;
+  private contentEl?: Element;
 
   static getDerivedStateFromProps(props: IProps, state: IState): IState | null {
     let newState: IState = state;
@@ -127,7 +127,7 @@ class Tooltip extends React.Component<IProps, IState> {
     } = this.props;
 
     // Store the root child element on the instance
-    this.childRef = findDOMNode(this) as Element;
+    this.childEl = findDOMNode(this) as Element;
 
     // Attach click listeners
     if (closeOnClickOutside && !useOverlay) {
@@ -171,9 +171,10 @@ class Tooltip extends React.Component<IProps, IState> {
   };
 
   handleClickOutside = (e: MouseEvent) => {
-    const node = this.rootRef.current;
-    if (node && !node.contains(e.target as Node)) {
-      this.toggleIsOpen(false);
+    const outsideChildren = this.childEl && !this.childEl.contains(e.target as Node)
+    const outsideContent = this.contentEl && !this.contentEl.contains(e.target as Node)
+    if (outsideChildren && outsideContent) {
+      this.toggleIsOpen(false)
     }
   };
 
@@ -301,12 +302,15 @@ class Tooltip extends React.Component<IProps, IState> {
     if (isOpen && typeof content !== "function") {
       return (
         <Rect observe={isOpen}>
-          {({ rect: contentRect, ref }) => {
+          {({ rect: contentRect, ref: contentRef }) => {
             const fit = this.calculatePosition(anchorRect, contentRect);
             return (
               <div
                 {...handlers}
-                ref={ref}
+                ref={(r: any) => {
+                  this.contentEl = r;
+                  contentRef(r);
+                }}
                 style={{
                   ...fit.style,
                   ...this.getContentStyles()
@@ -335,7 +339,7 @@ class Tooltip extends React.Component<IProps, IState> {
     if (isContentFunction(content)) {
       return (
         <Rect observe={isOpen}>
-          {({ rect: contentRect, ref }) => {
+          {({ rect: contentRect, ref: contentRef }) => {
             const fit = this.calculatePosition(anchorRect, contentRect);
             return (
               <React.Fragment>
@@ -343,7 +347,10 @@ class Tooltip extends React.Component<IProps, IState> {
                   isOpen,
                   getProps: () => {
                     return {
-                      ref,
+                      ref: (r: any) => {
+                        this.contentEl = r;
+                        contentRef(r);
+                      },
                       ...handlers,
                       style: {
                         ...fit.style,

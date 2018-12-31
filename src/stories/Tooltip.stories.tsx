@@ -134,6 +134,7 @@ storiesOf("Tooltip", module)
             trigger="click"
             position={store.state.position}
             alignment={store.state.alignment}
+            closeOnClickOutside={false}
           >
             Click Me!
           </Tooltip>
