@@ -36,7 +36,7 @@ storiesOf("Tooltip", module)
     <div style={styles}>
       <Tooltip
         content="Hello"
-        style={{ color: "#FFF", textDecoration: 'underline' }}
+        style={{ color: "#FFF", textDecoration: 'underline', width: 300, padding: 50 }}
         backgroundColor="#000"
       >
         <div>Hover Me!</div>
@@ -57,7 +57,9 @@ storiesOf("Tooltip", module)
   ))
   .add("Children render props", () => (
     <div style={styles}>
-      <Tooltip content="Hello">{() => <div>Hover Me!</div>}</Tooltip>
+      <Tooltip content="Hello">
+        {({ getProps }) => <div {...getProps()}>Hover Me!</div>}
+      </Tooltip>
     </div>
   ))
   .add(
