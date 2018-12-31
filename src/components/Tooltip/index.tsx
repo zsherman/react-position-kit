@@ -45,6 +45,7 @@ interface IProps {
   onMouseLeave?: InteractionHandler;
   onClick?: InteractionHandler;
   styles: React.CSSProperties;
+  closeOnEscape: boolean;
   animated: boolean;
 }
 
@@ -92,6 +93,7 @@ class Tooltip extends React.Component<IProps, IState> {
     arrowSize: 8,
     offset: 15,
     animated: true,
+    closeOnEscape: true,
     styles: {}
   };
 
@@ -101,14 +103,19 @@ class Tooltip extends React.Component<IProps, IState> {
   private rootRef = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
-    const { trigger } = this.props
+    const { trigger, closeOnEscape } = this.props
+
     if (trigger.includes("click")) {
       document.addEventListener("click", this.handleClickOutside);
+    }
+
+    if (closeOnEscape) {
+      document.addEventListener("keydown", this.handleEscape, false);
     }
   }
 
   componentWillUnmount() {
-    const { trigger } = this.props
+    const { trigger, closeOnEscape } = this.props
 
     if (this.unmountTimerId) {
       clearTimeout(this.unmountTimerId);
@@ -116,6 +123,16 @@ class Tooltip extends React.Component<IProps, IState> {
 
     if (trigger.includes("click")) {
       document.removeEventListener("click", this.handleClickOutside);
+    }
+
+    if (closeOnEscape) {
+      document.removeEventListener("keydown", this.handleEscape);
+    }
+  }
+
+  handleEscape = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' || e.which === 27) {
+      this.toggleIsOpen(false);
     }
   }
 
@@ -332,6 +349,12 @@ class Tooltip extends React.Component<IProps, IState> {
     return handlers;
   }
 
+  getChildStyles (): React.CSSProperties {
+    return {
+      cursor: 'pointer'
+    }
+  }
+
   renderChildren(ref: Ref, rect: DOMRect): React.ReactNode {
     const { children } = this.props;
 
@@ -346,7 +369,11 @@ class Tooltip extends React.Component<IProps, IState> {
     }
 
     return (
-      <div ref={ref} {...handlers}>
+      <div
+        ref={ref}
+        {...handlers}
+        style={this.getChildStyles()}
+      >
         {children}
       </div>
     );
