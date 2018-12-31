@@ -1,8 +1,8 @@
 import * as React from "react";
-import Rect from "components/rect";
+import Rect from "components/Rect";
 // import { Position, Alignment } from 'types'
 import { uniq, fitOnBestSide } from "./utils";
-import Arrow from "../arrow";
+import Arrow from "../Arrow";
 
 // type ChildFunction = React.StatelessComponent<IChildProps>;
 type ContentFunction = (props: IContentProps) => React.ReactNode;
@@ -82,8 +82,8 @@ class Tooltip extends React.Component<IProps, IState> {
     alignment: "middle",
     autoPosition: ["top", "right", "left", "bottom"],
     autoAlign: ["start", "middle", "end"],
-    trigger: ["click", "hover"],
-    unmountDelay: 100,
+    trigger: "hover",
+    unmountDelay: 500,
     allowOverflow: false,
     backgroundColor: "#eee",
     borderColor: "#000",
@@ -101,44 +101,49 @@ class Tooltip extends React.Component<IProps, IState> {
   private rootRef = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
-    document.addEventListener("click", this.handleClickOutside);
+    const { trigger } = this.props
+    if (trigger.includes("click")) {
+      document.addEventListener("click", this.handleClickOutside);
+    }
   }
 
   componentWillUnmount() {
+    const { trigger } = this.props
+
     if (this.unmountTimerId) {
       clearTimeout(this.unmountTimerId);
     }
 
-    document.removeEventListener("click", this.handleClickOutside);
+    if (trigger.includes("click")) {
+      document.removeEventListener("click", this.handleClickOutside);
+    }
   }
 
   handleClickOutside = (e: MouseEvent) => {
     const node = this.rootRef.current;
     if (node && !node.contains(e.target as Node)) {
-      // this.toggleIsOpen(false);
+      this.toggleIsOpen(false);
     }
   };
 
-  toggleIsOpen = (isOpen?: boolean): void => {
+  toggleIsOpen = (shouldOpen?: boolean): void => {
     const { unmountDelay } = this.props;
+    const { isOpen } = this.state;
+    const nextIsOpen = typeof shouldOpen === "undefined" ? !isOpen : shouldOpen;
 
     if (this.unmountTimerId) {
       clearTimeout(this.unmountTimerId);
       this.unmountTimerId = undefined;
     }
 
+    if (!nextIsOpen) {
+      this.unmountTimerId = window.setTimeout(() => {
+        this.setState({ isOpen: false });
+      }, unmountDelay);
+      return
+    }
+
     this.setState((state: IState) => {
-      const nextIsOpen = typeof isOpen === "undefined" ? !state.isOpen : isOpen;
-
-      if (!nextIsOpen) {
-        this.unmountTimerId = window.setTimeout(() => {
-          this.setState({
-            isOpen: false
-          });
-        }, unmountDelay);
-        return null;
-      }
-
       return {
         isOpen: nextIsOpen
       };
