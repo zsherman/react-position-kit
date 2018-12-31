@@ -83,7 +83,7 @@ class Tooltip extends React.Component<IProps, IState> {
     autoPosition: ["top", "right", "left", "bottom"],
     autoAlign: ["start", "middle", "end"],
     trigger: "hover",
-    unmountDelay: 500,
+    unmountDelay: 200,
     allowOverflow: false,
     backgroundColor: "#eee",
     borderColor: "#000",
