@@ -1,13 +1,13 @@
 {
-  "name": "@timberio/popover",
+  "name": "react-position-kit",
   "version": "0.0.1",
-  "description": "A popover built with React and TypeScript",
-  "author": "Timber",
+  "description": "A positioning toolkit (popovers, tooltip, etc.) built with React and TypeScript",
+  "author": "Zach Sherman",
   "private": true,
-  "homepage": "https://github.com/timberio/popover#readme",
+  "homepage": "https://github.com/zsherman/react-position-kit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/timberio/popover.git"
+    "url": "git+https://github.com/zsherman/react-position-kit.git"
   },
   "keywords": [],
   "files": [
@@ -66,6 +66,7 @@
     "react": "^16.7.0",
     "react-docgen-typescript-webpack-plugin": "^1.1.0",
     "react-dom": "^16.7.0",
+    "react-draggable": "^3.1.1",
     "rimraf": "^2.6.2",
     "storybook-addon-jsx": "^6.0.0",
     "ts-jest": "^23.10.5",

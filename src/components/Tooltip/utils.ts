@@ -44,6 +44,8 @@ const placementsByPosition = {
 // Base styles to apply to all content containers
 function getBaseStyles(): React.CSSProperties {
   return {
+    top: 0,
+    left: 0,
     visibility: "visible",
     position: "fixed"
   };
@@ -127,7 +129,26 @@ export function measureFitStyles({
 }
 
 function rankFits(fits: any) {
-  return fits.filter((f: any) => f);
+  const inBounds = fits.filter((f: any) => {
+    return f.style.top >= 0 && f.style.left >= 0
+  })
+
+  if (inBounds.length > 0) {
+    return inBounds;
+  }
+
+  return fits.sort((a: any, b: any) => {
+    let outOfBoundsA: number = 0;
+    let outOfBoundsB: number = 0;
+
+    if (a.style.left < 0) outOfBoundsA += Math.abs(a.style.left);
+    if (a.style.top < 0) outOfBoundsA += Math.abs(a.style.top);
+
+    if (b.style.left < 0) outOfBoundsB += Math.abs(b.style.left);
+    if (b.style.top < 0) outOfBoundsB += Math.abs(b.style.top);
+
+    return outOfBoundsA > outOfBoundsB ? 1 : -1;
+  });
 }
 
 export function fitOnBestSide({

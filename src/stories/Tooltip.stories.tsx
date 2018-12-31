@@ -1,6 +1,7 @@
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import { withState } from "@dump247/storybook-state";
+import Draggable from "react-draggable";
 import Tooltip from "components/Tooltip";
 import { Position, Alignment } from "types";
 
@@ -59,6 +60,22 @@ storiesOf("Tooltip", module)
     <div style={styles}>
       <Tooltip content="Hello">
         {({ getProps, isOpen }) => <div {...getProps()}>Hover Me! Is Open: {isOpen.toString()}</div>}
+      </Tooltip>
+    </div>
+  ))
+  .add("Smart positioning", () => (
+    <div>
+      <Tooltip content="I prefer the left side." isOpen trigger="click" position="left">
+        {({ getProps }) => (
+          <Draggable>
+            <div
+              {...getProps()}
+              style={{ display: 'inline-block', cursor: 'move' }}
+            >
+              Drag me around.
+            </div>
+          </Draggable>
+        )}
       </Tooltip>
     </div>
   ))
