@@ -56,12 +56,13 @@ storiesOf("Tooltip", module)
     })(({ store }) => (
     <div>
       <button onClick={() => store.set({ isOpen: !store.state.isOpen })}>
-        Toggle Open
+        Set to {store.state.isOpen ? 'Closed' : 'Open'}
       </button>
       <div style={styles}>
         <Tooltip
           isOpen={store.state.isOpen}
           content="Hello"
+          closeOnClickOutside={false}
         >
           I am Controllable, click the button above.
         </Tooltip>

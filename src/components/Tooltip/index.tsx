@@ -3,6 +3,7 @@ import Rect from "components/Rect";
 // import { Position, Alignment } from 'types'
 import { uniq, fitOnBestSide } from "./utils";
 import Arrow from "../Arrow";
+import Overlay from '../Overlay';
 
 // type ChildFunction = React.StatelessComponent<IChildProps>;
 type ContentFunction = (props: IContentProps) => React.ReactNode;
@@ -45,7 +46,9 @@ interface IProps {
   onMouseLeave?: InteractionHandler;
   onClick?: InteractionHandler;
   styles: React.CSSProperties;
+  useOverlay: boolean;
   closeOnEscape: boolean;
+  closeOnClickOutside: boolean;
   animated: boolean;
 }
 
@@ -95,6 +98,8 @@ class Tooltip extends React.Component<IProps, IState> {
     offset: 15,
     animated: true,
     closeOnEscape: true,
+    closeOnClickOutside: true,
+    useOverlay: true,
     styles: {}
   };
 
@@ -103,7 +108,7 @@ class Tooltip extends React.Component<IProps, IState> {
   private rootRef = React.createRef<HTMLDivElement>();
 
   static getDerivedStateFromProps(props: IProps, state: IState): IState | null {
-    let newState: IState = { isOpen: state.isOpen };
+    let newState: IState = state;
     if (props.isOpen !== undefined && (props.isOpen !== state.prevIsOpen)) {
       newState["prevIsOpen"] = props.isOpen;
       if (props.isOpen !== state.isOpen) {
@@ -114,9 +119,14 @@ class Tooltip extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    const { trigger, closeOnEscape } = this.props
+    const {
+      trigger,
+      closeOnEscape,
+      closeOnClickOutside,
+      useOverlay,
+    } = this.props
 
-    if (trigger.includes("click")) {
+    if (closeOnClickOutside && !useOverlay) {
       document.addEventListener("click", this.handleClickOutside);
     }
 
@@ -126,13 +136,18 @@ class Tooltip extends React.Component<IProps, IState> {
   }
 
   componentWillUnmount() {
-    const { trigger, closeOnEscape } = this.props
+    const {
+      trigger,
+      closeOnEscape,
+      closeOnClickOutside,
+      useOverlay
+    } = this.props
 
     if (this.unmountTimerId) {
       clearTimeout(this.unmountTimerId);
     }
 
-    if (trigger.includes("click")) {
+    if (closeOnClickOutside && !useOverlay) {
       document.removeEventListener("click", this.handleClickOutside);
     }
 
@@ -242,6 +257,7 @@ class Tooltip extends React.Component<IProps, IState> {
       borderColor,
       borderStyle: "solid",
       padding: 15,
+      zIndex: 9999,
     };
 
     if (animated) {
@@ -391,6 +407,8 @@ class Tooltip extends React.Component<IProps, IState> {
 
   render() {
     const { isOpen } = this.state;
+    const { useOverlay, trigger } = this.props
+    const showOverlay = useOverlay && isOpen && trigger.includes('click')
 
     return (
       <Rect observe={isOpen}>
@@ -398,6 +416,9 @@ class Tooltip extends React.Component<IProps, IState> {
           <div ref={this.rootRef}>
             {this.renderChildren(ref, rect)}
             {this.renderContent(rect)}
+            {showOverlay && (
+              <Overlay onClick={() => this.toggleIsOpen(false)} />
+            )}
           </div>
         )}
       </Rect>
