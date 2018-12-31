@@ -58,7 +58,7 @@ storiesOf("Tooltip", module)
   .add("Children render props", () => (
     <div style={styles}>
       <Tooltip content="Hello">
-        {({ getProps }) => <div {...getProps()}>Hover Me!</div>}
+        {({ getProps, isOpen }) => <div {...getProps()}>Hover Me! Is Open: {isOpen.toString()}</div>}
       </Tooltip>
     </div>
   ))

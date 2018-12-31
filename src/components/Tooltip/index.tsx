@@ -54,13 +54,13 @@ interface IProps {
 }
 
 interface IContentProps {
-  isOpen?: boolean;
+  isOpen: boolean;
   toggleIsOpen?: (isOpen?: boolean) => void;
   getProps: any;
 }
 
 interface IChildProps {
-  isOpen?: boolean;
+  isOpen: boolean;
   toggleIsOpen?: (isOpen?: boolean) => void;
   getProps: any;
 }
