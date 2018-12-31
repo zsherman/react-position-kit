@@ -65,6 +65,7 @@ interface IChildProps {
 
 interface IState {
   isOpen: boolean;
+  prevIsOpen?: boolean;
 }
 
 interface IHandlers {
@@ -84,7 +85,7 @@ class Tooltip extends React.Component<IProps, IState> {
     autoPosition: ["top", "right", "left", "bottom"],
     autoAlign: ["start", "middle", "end"],
     trigger: "hover",
-    unmountDelay: 200,
+    unmountDelay: 100,
     allowOverflow: false,
     backgroundColor: "#eee",
     borderColor: "#000",
@@ -98,9 +99,19 @@ class Tooltip extends React.Component<IProps, IState> {
   };
 
   readonly state: IState = initialState;
-
   private unmountTimerId?: number;
   private rootRef = React.createRef<HTMLDivElement>();
+
+  static getDerivedStateFromProps(props: IProps, state: IState): IState | null {
+    let newState: IState = { isOpen: state.isOpen };
+    if (props.isOpen !== undefined && (props.isOpen !== state.prevIsOpen)) {
+      newState["prevIsOpen"] = props.isOpen;
+      if (props.isOpen !== state.isOpen) {
+        newState.isOpen = props.isOpen;
+      }
+    }
+    return newState;
+  }
 
   componentDidMount() {
     const { trigger, closeOnEscape } = this.props
@@ -231,7 +242,6 @@ class Tooltip extends React.Component<IProps, IState> {
       borderColor,
       borderStyle: "solid",
       padding: 15,
-      boxShadow: "rgba(0, 0, 0, 0.05) 1px 1px 1px"
     };
 
     if (animated) {
