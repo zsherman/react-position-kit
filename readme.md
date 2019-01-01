@@ -9,6 +9,7 @@ This is a starter kit for building pakages with TypeScript and React.
 
 ## TODO
 
+- [ ] add tests
 - [ ] better position ranking detection
 - [ ] version of API without requiring getProps for render props?
 - [ ] portal support

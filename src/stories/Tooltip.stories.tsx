@@ -26,6 +26,21 @@ storiesOf("Tooltip", module)
       </Tooltip>
     </div>
   ))
+  .add("Nested", () => (
+    <div style={styles}>
+      <Tooltip
+        content={({ getProps}) => (
+          <div {...getProps()}>
+            <Tooltip content="Hello" position="right">
+              <div>Hover Me!</div>
+            </Tooltip>
+          </div>
+        )}
+      >
+        Hover Me!
+      </Tooltip>
+    </div>
+  ))
   .add("Click trigger", () => (
     <div style={styles}>
       <Tooltip content="Hello" trigger="click">

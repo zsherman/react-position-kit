@@ -6,7 +6,6 @@ import { uniq, fitOnBestSide } from "./utils";
 import Arrow from "../Arrow";
 import Overlay from '../Overlay';
 
-// type ChildFunction = React.StatelessComponent<IChildProps>;
 type ContentFunction = (props: IContentProps) => React.ReactNode;
 type ChildFunction = (props: IChildProps) => React.ReactNode;
 type Children = React.ReactNode | ChildFunction;
